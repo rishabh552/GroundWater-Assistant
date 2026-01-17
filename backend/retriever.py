@@ -60,12 +60,13 @@ class GroundwaterRetriever:
         results = self.vectorstore.similarity_search_with_score(query, k=k)
         return results
     
-    def format_context(self, results: list) -> str:
+    def format_context(self, results: list, max_chars: int = 2500) -> str:
         """
         Format search results into a context string for the LLM.
         
         Args:
             results: List of (document, score) tuples
+            max_chars: Maximum characters for context (to prevent token overflow)
             
         Returns:
             Formatted context string with sources
@@ -74,6 +75,7 @@ class GroundwaterRetriever:
             return "No relevant data found in documents."
         
         context_parts = []
+        total_chars = 0
         
         for idx, (doc, score) in enumerate(results, 1):
             source = doc.metadata.get("source", "Unknown")
@@ -82,29 +84,31 @@ class GroundwaterRetriever:
             # Add relevance indicator for very good matches
             relevance_note = " (High Relevance)" if score < 0.5 else ""
             
-            # Format the document content with clear structure
+            # Truncate individual document content if too long
             content = doc.page_content.strip()
+            if len(content) > 600:
+                content = content[:600] + "..."
             
-            context_parts.append(
+            part = (
                 f"=== DOCUMENT {idx}{relevance_note} ===\n"
                 f"📄 Source: {source}\n"
                 f"📍 Page: ~{page}\n"
                 f"🎯 Relevance Score: {score:.3f}\n"
                 f"\nCONTENT:\n{content}\n"
             )
+            
+            # Check if adding this part exceeds limit
+            if total_chars + len(part) > max_chars:
+                break
+                
+            context_parts.append(part)
+            total_chars += len(part)
         
-        header = (
-            f"RETRIEVED DATA FROM KNOWLEDGE BASE ({len(results)} documents found):\n" 
-            + "="*70 + "\n\n"
-        )
+        header = f"RETRIEVED DATA ({len(context_parts)} documents found):\n" + "="*50 + "\n\n"
         
         footer = (
-            "\n" + "="*70 + 
-            "\n\n⚠️ IMPORTANT: In your Final Answer, you MUST:\n"
-            "1. Provide a natural, conversational response first\n"
-            "2. Then add a '📊 Retrieved Data from Reports' section\n"
-            "3. Include specific water levels, percentages, classifications found above\n"
-            "4. Cite the source document and page number for each piece of data\n"
+            "\n" + "="*50 + 
+            "\n\n⚠️ In your Final Answer, cite source documents and page numbers.\n"
         )
         
         return header + "\n".join(context_parts) + footer

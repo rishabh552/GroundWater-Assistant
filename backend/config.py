@@ -25,7 +25,7 @@ MODELS_DIR.mkdir(parents=True, exist_ok=True)
 LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "ibm-granite/granite-3.0-2b-instruct")
 LLM_CONTEXT_LENGTH = 4096
 LLM_TEMPERATURE = 0.1  # Low for factual responses
-LLM_MAX_TOKENS = 768  # Increased for more detailed responses
+LLM_MAX_TOKENS = 512  # Reduced to stay within context limits
 
 # Embedding Settings
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
@@ -33,7 +33,7 @@ CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 
 # Retrieval Settings
-TOP_K_RESULTS = 5  # Reduced for faster inference
+TOP_K_RESULTS = 3  # Reduced to prevent context overflow
 
 # Risk Classification Mapping
 RISK_LEVELS = {

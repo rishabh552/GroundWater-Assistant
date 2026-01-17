@@ -192,62 +192,69 @@ export default function Home() {
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-6">
 
-              {/* Matrix: Key Metrics */}
+              {/* Matrix: Key Metrics - Based on actual data */}
               <div className="grid grid-cols-2 gap-3">
                 <Card className="p-3 rounded-lg border-border bg-accent/20 shadow-none">
-                  <div className="text-muted-foreground text-[9px] uppercase font-bold mb-1">Avg Depth</div>
-                  <div className="text-lg font-mono font-semibold text-foreground">14.2m <span className="text-destructive text-[10px]">-2%</span></div>
+                  <div className="text-muted-foreground text-[9px] uppercase font-bold mb-1">At Risk Districts</div>
+                  <div className="text-lg font-mono font-semibold text-foreground">24 <span className="text-destructive text-[10px]">67%</span></div>
                 </Card>
                 <Card className="p-3 rounded-lg border-border bg-accent/20 shadow-none">
-                  <div className="text-muted-foreground text-[9px] uppercase font-bold mb-1">Stations Online</div>
-                  <div className="text-lg font-mono font-semibold text-foreground">1,204 <span className="text-primary text-[10px]">●</span></div>
+                  <div className="text-muted-foreground text-[9px] uppercase font-bold mb-1">Total Mapped</div>
+                  <div className="text-lg font-mono font-semibold text-foreground">36 <span className="text-primary text-[10px]">●</span></div>
                 </Card>
               </div>
 
-              {/* Chart: Risk Distribution */}
+              {/* Chart: Risk Distribution - Actual percentages */}
               <div>
                 <div className="text-[9px] font-bold text-muted-foreground uppercase mb-3 flex justify-between">
                   <span>Risk Distribution</span>
-                  <span>Total: 38 Dists</span>
+                  <span>Total: 36 Districts</span>
                 </div>
-                {/* Multi-colored Progress Bar */}
+                {/* Multi-colored Progress Bar - Accurate widths */}
+                {/* Over-Exploited: 16 (44%), Semi-Critical: 6 (17%), Critical: 2 (6%), Safe: 9 (25%), Unknown: 4 (11%) */}
                 <div className="h-2 w-full flex rounded-full overflow-hidden mb-2 bg-muted">
-                  <div className="h-full bg-destructive w-[20%]" title="Critical" />
-                  <div className="h-full bg-orange-700 w-[10%]" title="Over-Exploited" />
-                  <div className="h-full bg-yellow-500 w-[30%]" title="Moderate" />
-                  <div className="h-full bg-green-500 w-[40%]" title="Safe" />
+                  <div className="h-full bg-red-700" style={{ width: '44%' }} title="Over-Exploited: 16" />
+                  <div className="h-full bg-orange-500" style={{ width: '6%' }} title="Critical: 2" />
+                  <div className="h-full bg-yellow-500" style={{ width: '17%' }} title="Semi-Critical: 6" />
+                  <div className="h-full bg-green-500" style={{ width: '25%' }} title="Safe: 9" />
                 </div>
-                {/* Legend */}
+                {/* Legend with counts */}
                 <div className="flex justify-between text-[9px] text-muted-foreground font-mono">
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-destructive" /> Crit</span>
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-orange-700" /> Extr</span>
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-yellow-500" /> Mod</span>
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500" /> Safe</span>
+                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-red-700" /> Expl (16)</span>
+                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-orange-500" /> Crit (2)</span>
+                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-yellow-500" /> Semi (6)</span>
+                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500" /> Safe (9)</span>
                 </div>
               </div>
 
-              {/* List: Critical Alerts */}
+              {/* List: Priority Alerts - Actual Over-Exploited districts */}
               <div>
                 <div className="text-[9px] font-bold text-muted-foreground uppercase mb-3 border-b border-border pb-2">
-                  Priority Alerts
+                  Priority Alerts (Over-Exploited)
                 </div>
                 <div className="space-y-2">
-                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group">
-                    <AlertOctagon size={12} className="text-destructive mt-0.5" />
+                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group" onClick={() => handleSendMessage("What is the groundwater status in Chennai?")}>
+                    <AlertOctagon size={12} className="text-red-600 mt-0.5" />
                     <div className="flex-1">
-                      <div className="text-xs font-semibold text-foreground group-hover:text-destructive transition-colors">Perambalur District</div>
-                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Groundwater depletion rate at 4% annually. Immediate restriction advised.</div>
+                      <div className="text-xs font-semibold text-foreground group-hover:text-red-500 transition-colors">Chennai</div>
+                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Over-exploited. Extraction exceeds recharge capacity.</div>
                     </div>
-                    <div className="text-[8px] text-muted-foreground whitespace-nowrap">2h ago</div>
                   </div>
 
-                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group">
-                    <AlertOctagon size={12} className="text-orange-700 mt-0.5" />
+                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group" onClick={() => handleSendMessage("What is the groundwater status in Salem?")}>
+                    <AlertOctagon size={12} className="text-red-600 mt-0.5" />
                     <div className="flex-1">
-                      <div className="text-xs font-semibold text-foreground group-hover:text-orange-700 transition-colors">Tiruvannamalai</div>
-                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Borewell density exceeded threshold. <span className="underline decoration-dotted">View Order</span></div>
+                      <div className="text-xs font-semibold text-foreground group-hover:text-red-500 transition-colors">Salem</div>
+                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Over-exploited. Industrial demand critical.</div>
                     </div>
-                    <div className="text-[8px] text-muted-foreground whitespace-nowrap">5h ago</div>
+                  </div>
+
+                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group" onClick={() => handleSendMessage("What is the groundwater status in Coimbatore?")}>
+                    <AlertOctagon size={12} className="text-orange-500 mt-0.5" />
+                    <div className="flex-1">
+                      <div className="text-xs font-semibold text-foreground group-hover:text-orange-500 transition-colors">Coimbatore</div>
+                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Critical status. High borewell density.</div>
+                    </div>
                   </div>
                 </div>
               </div>

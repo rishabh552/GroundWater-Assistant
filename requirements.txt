@@ -28,9 +28,9 @@ faiss-cpu>=1.8.0
 docling>=2.0.0
 reportlab>=4.0.0
 
-# === Translation ===
-# Using deep-translator instead of googletrans to avoid httpx conflict with langsmith
-deep-translator>=1.11.0
+# === Translation (No API Key Required) ===
+mtranslate>=1.8
+langdetect>=1.0.9
 
 # === UI Dependencies (Streamlit) ===
 streamlit>=1.40.0

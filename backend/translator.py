@@ -1,10 +1,12 @@
 """
 Translation module for multilingual support (Tamil, Hindi, English)
-Uses deep-translator for language detection and translation
-(Replaced googletrans due to httpx version conflicts with langsmith)
+Uses mtranslate (no API key required) and langdetect for language detection
 """
-from deep_translator import GoogleTranslator
-from deep_translator.detection import single_detection
+import mtranslate
+from langdetect import detect, DetectorFactory
+
+# Ensure consistent language detection results
+DetectorFactory.seed = 0
 
 # Supported languages
 SUPPORTED_LANGUAGES = {
@@ -12,10 +14,6 @@ SUPPORTED_LANGUAGES = {
     'ta': 'Tamil',
     'hi': 'Hindi'
 }
-
-# Google Translate API key for detection (free tier)
-# Leave as 'auto' for auto-detection
-DETECT_API_KEY = None
 
 
 def detect_language(text: str) -> str:
@@ -29,8 +27,8 @@ def detect_language(text: str) -> str:
         Language code (e.g., 'ta', 'en', 'hi')
     """
     try:
-        # Use deep-translator's detection
-        detected = single_detection(text, api_key=DETECT_API_KEY)
+        # Use langdetect for offline detection
+        detected = detect(text)
         return detected
     except Exception as e:
         print(f"Language detection failed: {e}")
@@ -62,9 +60,8 @@ def translate_to_english(text: str, source_lang: str = None) -> tuple:
         if source_lang == 'en':
             return text, 'en'
         
-        # Translate to English using deep-translator
-        translator = GoogleTranslator(source=source_lang, target='en')
-        result = translator.translate(text)
+        # Translate to English using mtranslate (no API key needed)
+        result = mtranslate.translate(text, 'en', source_lang)
         return result, source_lang
         
     except Exception as e:
@@ -88,8 +85,8 @@ def translate_response(text: str, target_lang: str) -> str:
         if target_lang == 'en':
             return text
         
-        translator = GoogleTranslator(source='en', target=target_lang)
-        result = translator.translate(text)
+        # Translate using mtranslate (no API key needed)
+        result = mtranslate.translate(text, target_lang, 'en')
         return result
         
     except Exception as e:
@@ -104,7 +101,7 @@ def get_language_name(lang_code: str) -> str:
 
 # Test translation when run directly
 if __name__ == "__main__":
-    print("Testing translation module...")
+    print("Testing translation module (mtranslate - no API key required)...")
     
     # Test Tamil
     tamil_text = "சேலம் மாவட்டத்தின் நிலத்தடி நீர் நிலை என்ன?"
@@ -112,6 +109,13 @@ if __name__ == "__main__":
     print(f"\nTamil input: {tamil_text}")
     print(f"Detected language: {lang}")
     print(f"English translation: {english}")
+    
+    # Test Hindi
+    hindi_text = "चेन्नई में भूजल स्तर क्या है?"
+    english_hi, lang_hi = translate_to_english(hindi_text)
+    print(f"\nHindi input: {hindi_text}")
+    print(f"Detected language: {lang_hi}")
+    print(f"English translation: {english_hi}")
     
     # Test response translation
     response = "Salem district has moderate groundwater levels."
