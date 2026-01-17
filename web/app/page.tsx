@@ -109,6 +109,33 @@ export default function Home() {
     handleSendMessage(`What is the groundwater status in ${region}?`);
   };
 
+  // New chat - clear messages
+  const handleNewChat = () => {
+    if (messages.length > 0 && !confirm('Start a new analysis? Current chat will be cleared.')) return;
+    setMessages([]);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
+  // Clear all history
+  const handleClearHistory = () => {
+    if (!confirm('Clear all chat history? This cannot be undone.')) return;
+    setMessages([]);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
+  // Navigate to specific message
+  const handleNavigateToMessage = (messageId: string) => {
+    const element = document.getElementById(`message-${messageId}`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      // Highlight effect
+      element.classList.add('ring-2', 'ring-emerald-500/50', 'rounded-xl');
+      setTimeout(() => {
+        element.classList.remove('ring-2', 'ring-emerald-500/50', 'rounded-xl');
+      }, 2000);
+    }
+  };
+
   if (!isLoaded) return null; // Prevent hydration mismatch
 
   return (
@@ -116,7 +143,12 @@ export default function Home() {
 
       {/* Left Sidebar */}
       <div className="hidden md:flex h-full overflow-hidden border-r border-[var(--border-color)]">
-        <Sidebar messages={messages} />
+        <Sidebar
+          messages={messages}
+          onNewChat={handleNewChat}
+          onClearHistory={handleClearHistory}
+          onNavigateToMessage={handleNavigateToMessage}
+        />
       </div>
       {/* Center Chat Area */}
       <div className="flex flex-col h-full overflow-hidden relative border-r border-[var(--border-color)]">

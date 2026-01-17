@@ -13,7 +13,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Jal-Rakshak | Groundwater Advisory System",
+  title: "GroundWater Assistant | Groundwater Advisory System",
   description: "AI-powered groundwater risk assessment for Tamil Nadu farmers",
 };
 

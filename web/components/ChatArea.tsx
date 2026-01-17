@@ -73,7 +73,11 @@ export default function ChatArea({
                             </div>
                         </div>
                     ) : (
-                        messages.map((msg) => <MessageBubble key={msg.id} message={msg} />)
+                        messages.map((msg) => (
+                            <div key={msg.id} id={`message-${msg.id}`} className="transition-all duration-300">
+                                <MessageBubble message={msg} />
+                            </div>
+                        ))
                     )}
 
                     {isLoading && (
