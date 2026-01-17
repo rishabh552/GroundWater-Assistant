@@ -1,0 +1,254 @@
+{
+    "Chennai": {
+        "coords": [
+            13.0827,
+            80.2707
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Tiruvallur": {
+        "coords": [
+            13.123,
+            79.912
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Kancheepuram": {
+        "coords": [
+            12.8342,
+            79.7036
+        ],
+        "risk": "Semi-Critical"
+    },
+    "Chengalpattu": {
+        "coords": [
+            12.6841,
+            79.9836
+        ],
+        "risk": "Safe"
+    },
+    "Vellore": {
+        "coords": [
+            12.9165,
+            79.1325
+        ],
+        "risk": "Safe"
+    },
+    "Ranipet": {
+        "coords": [
+            12.9273,
+            79.333
+        ],
+        "risk": "Unknown"
+    },
+    "Tirupathur": {
+        "coords": [
+            12.492,
+            78.567
+        ],
+        "risk": "Safe"
+    },
+    "Tiruvannamalai": {
+        "coords": [
+            12.233,
+            79.0667
+        ],
+        "risk": "Unknown"
+    },
+    "Villupuram": {
+        "coords": [
+            11.9398,
+            79.492
+        ],
+        "risk": "Critical"
+    },
+    "Kallakurichi": {
+        "coords": [
+            11.738,
+            78.963
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Salem": {
+        "coords": [
+            11.6643,
+            78.146
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Erode": {
+        "coords": [
+            11.341,
+            77.7172
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Namakkal": {
+        "coords": [
+            11.219,
+            78.168
+        ],
+        "risk": "Safe"
+    },
+    "Coimbatore": {
+        "coords": [
+            11.0168,
+            76.9558
+        ],
+        "risk": "Critical"
+    },
+    "Tiruppur": {
+        "coords": [
+            11.1085,
+            77.3411
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Nilgiris": {
+        "coords": [
+            11.41,
+            76.695
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Dharmapuri": {
+        "coords": [
+            12.1277,
+            78.1578
+        ],
+        "risk": "Safe"
+    },
+    "Krishnagiri": {
+        "coords": [
+            12.5266,
+            78.2146
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Tiruchirappalli": {
+        "coords": [
+            10.7905,
+            78.7047
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Karur": {
+        "coords": [
+            10.9597,
+            78.083
+        ],
+        "risk": "Unknown"
+    },
+    "Perambalur": {
+        "coords": [
+            11.2349,
+            78.872
+        ],
+        "risk": "Safe"
+    },
+    "Ariyalur": {
+        "coords": [
+            11.14,
+            79.078
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Pudukkottai": {
+        "coords": [
+            10.38,
+            78.82
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Thanjavur": {
+        "coords": [
+            10.787,
+            79.1378
+        ],
+        "risk": "Semi-Critical"
+    },
+    "Thiruvarur": {
+        "coords": [
+            10.776,
+            79.637
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Nagapattinam": {
+        "coords": [
+            10.76,
+            79.84
+        ],
+        "risk": "Safe"
+    },
+    "Madurai": {
+        "coords": [
+            9.9252,
+            78.1198
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Dindigul": {
+        "coords": [
+            10.3673,
+            77.9803
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Theni": {
+        "coords": [
+            10.0104,
+            77.4768
+        ],
+        "risk": "Safe"
+    },
+    "Virudhunagar": {
+        "coords": [
+            9.568,
+            77.9624
+        ],
+        "risk": "Unknown"
+    },
+    "Sivagangai": {
+        "coords": [
+            9.8433,
+            78.4809
+        ],
+        "risk": "Over-Exploited"
+    },
+    "Ramanathapuram": {
+        "coords": [
+            9.366,
+            78.835
+        ],
+        "risk": "Semi-Critical"
+    },
+    "Thoothukudi": {
+        "coords": [
+            8.7642,
+            78.1348
+        ],
+        "risk": "Safe"
+    },
+    "Tirunelveli": {
+        "coords": [
+            8.7139,
+            77.7567
+        ],
+        "risk": "Semi-Critical"
+    },
+    "Tenkasi": {
+        "coords": [
+            8.966,
+            77.3
+        ],
+        "risk": "Semi-Critical"
+    },
+    "Kanniyakumari": {
+        "coords": [
+            8.0883,
+            77.5385
+        ],
+        "risk": "Semi-Critical"
+    }
+}

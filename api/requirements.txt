@@ -1,0 +1,7 @@
+# FastAPI backend requirements
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# Existing dependencies (already in main requirements.txt)
+# langchain, faiss, transformers, etc. are imported from parent

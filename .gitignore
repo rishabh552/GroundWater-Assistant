@@ -1,0 +1,96 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Models (large files)
+models/
+*.gguf
+*.bin
+*.safetensors
+
+# Vector Store (regeneratable) - COMMENTED OUT FOR INTERNSHIP SUBMISSION
+# vectorstore/
+
+# Data (user-specific)
+data/pdfs/*.pdf
+
+# Generated files
+# generated_map_data.json - COMMENTED OUT FOR INTERNSHIP SUBMISSION
+test_report.pdf
+*.pdf
+!web/**/*.pdf  # Keep any PDFs in web assets
+
+# Environment variables
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Next.js
+web/.next/
+web/out/
+web/node_modules/
+web/.env*.local
+web/.vercel
+web/*.tsbuildinfo
+web/next-env.d.ts
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing
+coverage/
+
+# Test outputs
+test_*.pdf
+*_test.pdf
+tests/*.pdf
+tests/__pycache__/
