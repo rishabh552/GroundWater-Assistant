@@ -1,8 +1,10 @@
 """
 Translation module for multilingual support (Tamil, Hindi, English)
-Uses Google Translate API for language detection and translation
+Uses deep-translator for language detection and translation
+(Replaced googletrans due to httpx version conflicts with langsmith)
 """
-from googletrans import Translator
+from deep_translator import GoogleTranslator
+from deep_translator.detection import single_detection
 
 # Supported languages
 SUPPORTED_LANGUAGES = {
@@ -11,16 +13,9 @@ SUPPORTED_LANGUAGES = {
     'hi': 'Hindi'
 }
 
-# Global translator instance
-_translator = None
-
-
-def get_translator():
-    """Get or create translator instance."""
-    global _translator
-    if _translator is None:
-        _translator = Translator()
-    return _translator
+# Google Translate API key for detection (free tier)
+# Leave as 'auto' for auto-detection
+DETECT_API_KEY = None
 
 
 def detect_language(text: str) -> str:
@@ -34,9 +29,9 @@ def detect_language(text: str) -> str:
         Language code (e.g., 'ta', 'en', 'hi')
     """
     try:
-        translator = get_translator()
-        detection = translator.detect(text)
-        return detection.lang
+        # Use deep-translator's detection
+        detected = single_detection(text, api_key=DETECT_API_KEY)
+        return detected
     except Exception as e:
         print(f"Language detection failed: {e}")
         return 'en'  # Default to English
@@ -59,8 +54,6 @@ def translate_to_english(text: str, source_lang: str = None) -> tuple:
         if text.isascii():
             return text, 'en'
         
-        translator = get_translator()
-        
         # Detect language if not provided (only for non-ASCII text)
         if source_lang is None:
             source_lang = detect_language(text)
@@ -69,9 +62,10 @@ def translate_to_english(text: str, source_lang: str = None) -> tuple:
         if source_lang == 'en':
             return text, 'en'
         
-        # Translate to English
-        result = translator.translate(text, src=source_lang, dest='en')
-        return result.text, source_lang
+        # Translate to English using deep-translator
+        translator = GoogleTranslator(source=source_lang, target='en')
+        result = translator.translate(text)
+        return result, source_lang
         
     except Exception as e:
         print(f"Translation to English failed: {e}")
@@ -94,9 +88,9 @@ def translate_response(text: str, target_lang: str) -> str:
         if target_lang == 'en':
             return text
         
-        translator = get_translator()
-        result = translator.translate(text, src='en', dest=target_lang)
-        return result.text
+        translator = GoogleTranslator(source='en', target=target_lang)
+        result = translator.translate(text)
+        return result
         
     except Exception as e:
         print(f"Translation to {target_lang} failed: {e}")

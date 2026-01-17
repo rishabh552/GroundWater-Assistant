@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "groundwater-assistant"
+version = "1.0.0"
+description = "AI-powered Groundwater Advisory System for Tamil Nadu"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+include = ["api*", "backend*"]
+
+[project.scripts]
+# Optional: Add CLI commands if needed
+# groundwater = "api.main:run"

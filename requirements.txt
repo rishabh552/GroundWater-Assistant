@@ -1,44 +1,41 @@
-# Jal-Rakshak Backend Dependencies
+# GroundWater Assistant - All Dependencies
 # Python 3.10+ required
+# Install: pip install -r requirements.txt
 
-# === PDF Parsing & Document Processing ===
-docling>=2.0.0
+# === FastAPI Core ===
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+pydantic>=2.10.0
+python-dotenv>=1.0.0
 
-# === LLM & AI Models ===
+# === LangChain Ecosystem (Pinned Compatible Versions) ===
+# These exact versions are tested to work together without pip conflicts
+langchain==0.3.13
+langchain-core==0.3.28
+langchain-community==0.3.13
+langchain-huggingface==0.1.2
+langchain-text-splitters==0.3.4
+
+# === LLM & Embeddings ===
 transformers>=4.35.0
-torch>=2.0.0
 sentence-transformers>=3.0.0
-
-# === LangChain Ecosystem ===
-langchain>=0.3.0
-langchain-community>=0.3.0
-langchain-huggingface>=0.1.0
-langchain-text-splitters>=0.3.0
+torch>=2.0.0
 
 # === Vector Database ===
-faiss-cpu>=1.8.0  # Use faiss-gpu for CUDA acceleration
+faiss-cpu>=1.8.0
 
-# === Web Interfaces ===
-# Streamlit (Classic UI)
+# === PDF & Document Processing ===
+docling>=2.0.0
+reportlab>=4.0.0
+
+# === Translation ===
+# Using deep-translator instead of googletrans to avoid httpx conflict with langsmith
+deep-translator>=1.11.0
+
+# === UI Dependencies (Streamlit) ===
 streamlit>=1.40.0
 streamlit-folium>=0.15.0
 folium>=0.15.0
 
-# FastAPI (Modern API)
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-pydantic>=2.0.0
-
-# === Report Generation ===
-reportlab>=4.0.0
-
-# === Translation & Localization ===
-googletrans==3.1.0a0
-
 # === Utilities ===
-python-dotenv>=1.0.0
 tqdm>=4.66.0
-
-# === Development & Testing ===
-# pytest>=7.0.0  # Uncomment for testing
-# black>=23.0.0  # Uncomment for code formatting

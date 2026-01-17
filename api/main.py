@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routes import chat, report, map
 
 app = FastAPI(
-    title="Jal-Rakshak API",
+    title="GroundWater Assistant API",
     description="Groundwater Advisory System API",
     version="1.0.0"
 )
@@ -37,3 +37,8 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
+
+if __name__ == "__main__":
+    import uvicorn
+    # Run the app with reload enabled
+    uvicorn.run("api.main:app", host="0.0.0.0", port=8000, reload=True)
