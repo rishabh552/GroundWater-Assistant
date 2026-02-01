@@ -73,8 +73,51 @@ def check_crop_feasibility(water_depth_m: float, crop_name: str) -> str:
     else: # Shallow water (Safe zone)
         return "HIGHLY FEASIBLE: Water availability is good for this crop."
 
+def web_search(query: str) -> str:
+    """
+    Search the web for real-time information using DuckDuckGo.
+    
+    Args:
+        query (str): The search query.
+        
+    Returns:
+        str: Summary of search results.
+    """
+    try:
+        from duckduckgo_search import DDGS
+        
+        print(f"Searching web for: {query}")
+        
+        # We use a context manager as recommended for DDGS
+        with DDGS() as ddgs:
+            # 1. Try general text search first
+            results = list(ddgs.text(query, region='in-en', max_results=10))
+            
+            # 2. Fallback to news if text search returns nothing (common for local data)
+            if not results:
+                print(f"No text results for '{query}', trying news fallback...")
+                results = list(ddgs.news(query, region='in-en', max_results=5))
+        
+        if not results:
+            return (
+                "No web results found. This could be due to specific query terms or temporary connectivity issues. "
+                "Note: Groundwater extraction data for specific regions (like Dindigul) is often strictly regulated and may not be publicly updated online."
+            )
+            
+        formatted_results = f"🌐 **Web Search Results for '{query}':**\n"
+        for i, res in enumerate(results, 1):
+            source_body = res.get('body') or res.get('snippet') or "No description available."
+            source_url = res.get('url') or res.get('href') or "No URL available."
+            formatted_results += f"{i}. **{res['title']}**: {source_body} (Source: {source_url})\n"
+            
+        return formatted_results
+        
+    except Exception as e:
+        return f"Web search failed: {str(e)}"
+
 # List of available tools for the Agent to see
 AVAILABLE_TOOLS = {
     "estimate_borewell_cost": estimate_borewell_cost,
-    "check_crop_feasibility": check_crop_feasibility
+    "check_crop_feasibility": check_crop_feasibility,
+    "web_search": web_search
 }

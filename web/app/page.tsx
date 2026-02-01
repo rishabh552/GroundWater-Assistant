@@ -7,21 +7,13 @@ import { LayoutDashboard, Sparkles, AlertOctagon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-export interface Message {
-  id: string;
-  role: "user" | "agent";
-  content: string;
-  timestamp: Date;
-  riskLevel?: string;
-  originalQuery?: string; // Store the user's original question for reports
-}
+import { Message } from "../types";
 
 // Dynamically import map to avoid SSR issues with Leaflet
 import dynamic from 'next/dynamic';
 const InteractiveMap = dynamic(() => import('../components/InteractiveMap'), {
   ssr: false,
-  loading: () => <div className="w-full h-full bg-[var(--bg-element)] animate-pulse flex items-center justify-center text-[var(--text-muted)]">Initializing Satellite Map...</div>
+  loading: () => <div className="w-full h-full bg-[var(--bg-app-gradient-start)] animate-pulse flex items-center justify-center text-[var(--text-muted)]">Initializing...</div>
 });
 
 const STORAGE_KEY = 'jal-rakshak-chat-history';
@@ -29,12 +21,13 @@ const STORAGE_KEY = 'jal-rakshak-chat-history';
 export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  // Persist hydration check
   const [isLoaded, setIsLoaded] = useState(false);
+  const [userRole, setUserRole] = useState("farmer");
 
-  // Load chat history on mount
+  // Load chat history
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const key = `${STORAGE_KEY}-${userRole}`;
+    const saved = localStorage.getItem(key);
     if (saved) {
       try {
         const parsed = JSON.parse(saved, (key, value) => {
@@ -44,22 +37,25 @@ export default function Home() {
         setMessages(parsed);
       } catch (e) {
         console.error("Failed to parse chat history", e);
+        setMessages([]);
       }
+    } else {
+      setMessages([]);
     }
     setIsLoaded(true);
-  }, []);
+  }, [userRole]);
 
-  // Save chat history on update
+  // Save chat history
   useEffect(() => {
     if (isLoaded) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+      const key = `${STORAGE_KEY}-${userRole}`;
+      localStorage.setItem(key, JSON.stringify(messages));
     }
-  }, [messages, isLoaded]);
+  }, [messages, isLoaded, userRole]);
 
   const handleSendMessage = async (query: string) => {
     if (!query.trim() || isLoading) return;
 
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       role: "user",
@@ -73,21 +69,19 @@ export default function Home() {
       const response = await fetch("http://localhost:8000/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, user_role: userRole }),
       });
 
       if (!response.ok) throw new Error("Failed to get response");
-
       const data = await response.json();
 
-      // Add agent message
       const agentMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: "agent",
         content: data.response,
         timestamp: new Date(),
         riskLevel: data.risk_level,
-        originalQuery: query, // Store the original query
+        originalQuery: query,
       };
       setMessages((prev) => [...prev, agentMessage]);
     } catch (error) {
@@ -105,160 +99,159 @@ export default function Home() {
   };
 
   const handleRegionSelect = (region: string) => {
-    // Auto-trigger search when clicking map
     handleSendMessage(`What is the groundwater status in ${region}?`);
   };
 
-  // New chat - clear messages
   const handleNewChat = () => {
-    if (messages.length > 0 && !confirm('Start a new analysis? Current chat will be cleared.')) return;
+    if (messages.length > 0 && !confirm('Start a new analysis?')) return;
     setMessages([]);
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(`${STORAGE_KEY}-${userRole}`);
   };
 
-  // Clear all history
   const handleClearHistory = () => {
-    if (!confirm('Clear all chat history? This cannot be undone.')) return;
+    if (!confirm('Clear all chat history?')) return;
     setMessages([]);
-    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(`${STORAGE_KEY}-${userRole}`);
   };
 
-  // Navigate to specific message
   const handleNavigateToMessage = (messageId: string) => {
     const element = document.getElementById(`message-${messageId}`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      // Highlight effect
       element.classList.add('ring-2', 'ring-emerald-500/50', 'rounded-xl');
-      setTimeout(() => {
-        element.classList.remove('ring-2', 'ring-emerald-500/50', 'rounded-xl');
-      }, 2000);
+      setTimeout(() => element.classList.remove('ring-2', 'ring-emerald-500/50', 'rounded-xl'), 2000);
     }
   };
 
-  if (!isLoaded) return null; // Prevent hydration mismatch
+  const handleDeleteMessage = (messageId: string) => {
+    if (confirm('Delete this message?')) {
+      setMessages(prev => prev.filter(msg => msg.id !== messageId));
+    }
+  };
+
+  const handleDeleteConversation = (userMsgId: string) => {
+    if (confirm('Delete this conversation thread?')) {
+      setMessages(prev => {
+        const index = prev.findIndex(m => m.id === userMsgId);
+        if (index === -1) return prev;
+
+        const newMessages = [...prev];
+        // Check if next message is an agent response
+        if (index + 1 < newMessages.length && newMessages[index + 1].role === 'agent') {
+          // Remove both user message and agent response
+          newMessages.splice(index, 2);
+        } else {
+          // Remove just the user message
+          newMessages.splice(index, 1);
+        }
+        return newMessages;
+      });
+    }
+  };
+
+  if (!isLoaded) return null;
 
   return (
-    <main className="container-main grid grid-cols-[280px_1fr] lg:grid-cols-[280px_1fr_400px] h-screen w-full overflow-hidden bg-[var(--bg-app)]">
+    // Floating Layout Container with Gaps (p-4 gap-4)
+    <main className="h-screen w-full overflow-hidden p-2 md:p-4 gap-4 grid grid-cols-[280px_1fr] lg:grid-cols-[280px_1fr_400px]">
 
-      {/* Left Sidebar */}
-      <div className="hidden md:flex h-full overflow-hidden border-r border-[var(--border-color)]">
+      {/* 1. Floating Sidebar */}
+      <div className="hidden md:flex h-full glass-panel rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         <Sidebar
           messages={messages}
           onNewChat={handleNewChat}
           onClearHistory={handleClearHistory}
           onNavigateToMessage={handleNavigateToMessage}
+          userRole={userRole}
+          onRoleChange={setUserRole}
+          onDeleteConversation={handleDeleteConversation}
         />
       </div>
-      {/* Center Chat Area */}
-      <div className="flex flex-col h-full overflow-hidden relative border-r border-[var(--border-color)]">
+
+      {/* 2. Floating Chat Area (Center) */}
+      <div className="flex flex-col h-full glass-panel rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow relative">
         <ChatArea
           messages={messages}
           isLoading={isLoading}
           onSendMessage={handleSendMessage}
+          userRole={userRole}
+          onDeleteMessage={handleDeleteMessage}
         />
       </div>
 
-      {/* Right Panel: Map & Context */}
-      <div className="hidden lg:flex flex-col h-full bg-background overflow-hidden border-l border-border relative z-10 w-[400px]">
+      {/* 3. Floating Right Panel (Map) */}
+      <div className="hidden lg:flex flex-col h-full glass-panel rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
         {/* Map Header */}
-        <div className="p-4 border-b border-border flex items-center justify-between bg-card/50 backdrop-blur-md">
-          <h3 className="text-xs font-bold text-foreground flex items-center gap-2 uppercase tracking-widest">
-            <LayoutDashboard size={14} className="text-primary" />
+        <div className="p-4 border-b border-[var(--border-subtle)] flex items-center justify-between bg-[var(--bg-surface)]/50 backdrop-blur-sm">
+          <h3 className="text-xs font-bold text-[var(--text-primary)] flex items-center gap-2 uppercase tracking-widest">
+            <LayoutDashboard size={14} className="text-emerald-500" />
             District Intelligence
           </h3>
-          <Badge variant="outline" className="text-[10px] border-primary/20 bg-primary/10 text-primary font-mono px-2 py-0.5 animate-pulse">
+          <Badge variant="outline" className="text-[10px] border-emerald-500/20 bg-emerald-500/10 text-emerald-600 font-mono px-2 py-0.5 animate-pulse">
             LIVE
           </Badge>
         </div>
 
         {/* Map Container */}
-        <div className="flex-1 relative w-full bg-black">
-          <div className="absolute inset-0 shadow-[inset_0_0_50px_rgba(0,0,0,0.5)] z-10 pointer-events-none" />
+        <div className="flex-1 relative w-full bg-black/5">
           <InteractiveMap onRegionSelect={handleRegionSelect} />
         </div>
 
-        {/* Selected Context / Quick Stats - EXPANDED ANALYTICS */}
-        <div className="h-1/2 flex flex-col border-t border-border bg-card">
-
-          {/* Tab/Header */}
-          <div className="p-3 border-b border-border flex items-center justify-between">
-            <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+        {/* Floating Context Panel (Bottom of Right Column) */}
+        <div className="h-1/2 flex flex-col border-t border-[var(--border-subtle)] bg-[var(--bg-surface)]/80 backdrop-blur-md">
+          <div className="p-3 border-b border-[var(--border-subtle)] flex items-center justify-between">
+            <h4 className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-wider flex items-center gap-2">
               <Sparkles size={10} /> Live Analytics
             </h4>
-            <div className="text-[9px] text-muted-foreground font-mono">UPDATED: Just now</div>
+            <div className="text-[9px] text-[var(--text-muted)] font-mono">UPDATED: Just now</div>
           </div>
 
           <ScrollArea className="flex-1 p-4">
             <div className="space-y-6">
-
-              {/* Matrix: Key Metrics - Based on actual data */}
+              {/* Metrics */}
               <div className="grid grid-cols-2 gap-3">
-                <Card className="p-3 rounded-lg border-border bg-accent/20 shadow-none">
-                  <div className="text-muted-foreground text-[9px] uppercase font-bold mb-1">At Risk Districts</div>
-                  <div className="text-lg font-mono font-semibold text-foreground">24 <span className="text-destructive text-[10px]">67%</span></div>
+                <Card className="p-3 rounded-xl border-[var(--border-subtle)] bg-white/50 dark:bg-slate-800/50 shadow-none">
+                  <div className="text-[var(--text-muted)] text-[9px] uppercase font-bold mb-1">At Risk</div>
+                  <div className="text-lg font-mono font-semibold text-[var(--text-primary)]">24 <span className="text-red-500 text-[10px]">67%</span></div>
                 </Card>
-                <Card className="p-3 rounded-lg border-border bg-accent/20 shadow-none">
-                  <div className="text-muted-foreground text-[9px] uppercase font-bold mb-1">Total Mapped</div>
-                  <div className="text-lg font-mono font-semibold text-foreground">36 <span className="text-primary text-[10px]">●</span></div>
+                <Card className="p-3 rounded-xl border-[var(--border-subtle)] bg-white/50 dark:bg-slate-800/50 shadow-none">
+                  <div className="text-[var(--text-muted)] text-[9px] uppercase font-bold mb-1">Mapped</div>
+                  <div className="text-lg font-mono font-semibold text-[var(--text-primary)]">36 <span className="text-emerald-500 text-[10px]">●</span></div>
                 </Card>
               </div>
 
-              {/* Chart: Risk Distribution - Actual percentages */}
+              {/* Progress Bar */}
               <div>
-                <div className="text-[9px] font-bold text-muted-foreground uppercase mb-3 flex justify-between">
+                <div className="text-[9px] font-bold text-[var(--text-muted)] uppercase mb-3 flex justify-between">
                   <span>Risk Distribution</span>
-                  <span>Total: 36 Districts</span>
                 </div>
-                {/* Multi-colored Progress Bar - Accurate widths */}
-                {/* Over-Exploited: 16 (44%), Semi-Critical: 6 (17%), Critical: 2 (6%), Safe: 9 (25%), Unknown: 4 (11%) */}
-                <div className="h-2 w-full flex rounded-full overflow-hidden mb-2 bg-muted">
-                  <div className="h-full bg-red-700" style={{ width: '44%' }} title="Over-Exploited: 16" />
-                  <div className="h-full bg-orange-500" style={{ width: '6%' }} title="Critical: 2" />
-                  <div className="h-full bg-yellow-500" style={{ width: '17%' }} title="Semi-Critical: 6" />
-                  <div className="h-full bg-green-500" style={{ width: '25%' }} title="Safe: 9" />
-                </div>
-                {/* Legend with counts */}
-                <div className="flex justify-between text-[9px] text-muted-foreground font-mono">
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-red-700" /> Expl (16)</span>
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-orange-500" /> Crit (2)</span>
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-yellow-500" /> Semi (6)</span>
-                  <span className="flex items-center gap-1"><div className="w-1.5 h-1.5 rounded-full bg-green-500" /> Safe (9)</span>
+                <div className="h-2 w-full flex rounded-full overflow-hidden mb-2 bg-[var(--border-subtle)]">
+                  <div className="h-full bg-red-600" style={{ width: '44%' }} title="Over-Exploited" />
+                  <div className="h-full bg-orange-500" style={{ width: '6%' }} title="Critical" />
+                  <div className="h-full bg-yellow-500" style={{ width: '17%' }} title="Semi-Critical" />
+                  <div className="h-full bg-emerald-500" style={{ width: '25%' }} title="Safe" />
                 </div>
               </div>
 
-              {/* List: Priority Alerts - Actual Over-Exploited districts */}
-              <div>
-                <div className="text-[9px] font-bold text-muted-foreground uppercase mb-3 border-b border-border pb-2">
-                  Priority Alerts (Over-Exploited)
+              {/* Alerts List */}
+              <div className="space-y-3">
+                <div className="text-[9px] font-bold text-[var(--text-muted)] uppercase border-b border-[var(--border-subtle)] pb-2">
+                  Priority Alerts
                 </div>
-                <div className="space-y-2">
-                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group" onClick={() => handleSendMessage("What is the groundwater status in Chennai?")}>
-                    <AlertOctagon size={12} className="text-red-600 mt-0.5" />
+                {[
+                  { name: "Chennai", status: "Over-exploited", desc: "Extraction exceeds recharge.", color: "text-red-600" },
+                  { name: "Salem", status: "Over-exploited", desc: "Industrial demand critical.", color: "text-red-600" },
+                  { name: "Coimbatore", status: "Critical", desc: "High borewell density.", color: "text-orange-500" }
+                ].map((item) => (
+                  <div key={item.name} className="flex items-start gap-3 p-2 rounded-lg hover:bg-[var(--bg-app-gradient-start)] dark:hover:bg-slate-800/50 transition-colors cursor-pointer group" onClick={() => handleSendMessage(`What is the groundwater status in ${item.name}?`)}>
+                    <AlertOctagon size={14} className={`${item.color} mt-0.5`} />
                     <div className="flex-1">
-                      <div className="text-xs font-semibold text-foreground group-hover:text-red-500 transition-colors">Chennai</div>
-                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Over-exploited. Extraction exceeds recharge capacity.</div>
+                      <div className={`text-xs font-semibold text-[var(--text-primary)] group-hover:${item.color} transition-colors`}>{item.name}</div>
+                      <div className="text-[10px] text-[var(--text-secondary)] leading-tight mt-0.5">{item.desc}</div>
                     </div>
                   </div>
-
-                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group" onClick={() => handleSendMessage("What is the groundwater status in Salem?")}>
-                    <AlertOctagon size={12} className="text-red-600 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="text-xs font-semibold text-foreground group-hover:text-red-500 transition-colors">Salem</div>
-                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Over-exploited. Industrial demand critical.</div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-2 p-2 rounded hover:bg-accent transition-colors cursor-pointer group" onClick={() => handleSendMessage("What is the groundwater status in Coimbatore?")}>
-                    <AlertOctagon size={12} className="text-orange-500 mt-0.5" />
-                    <div className="flex-1">
-                      <div className="text-xs font-semibold text-foreground group-hover:text-orange-500 transition-colors">Coimbatore</div>
-                      <div className="text-[10px] text-muted-foreground leading-tight mt-0.5">Critical status. High borewell density.</div>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
-
             </div>
           </ScrollArea>
         </div>

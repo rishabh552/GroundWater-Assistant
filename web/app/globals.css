@@ -3,148 +3,176 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* === UI/UX Pro Max Design System: Nature Tech === */
 :root {
-  /* Clean Modern Theme - Matte Slate */
-  --bg-app: #f8fafc;
-  /* Slate 50 (Light Mode Base) - OR Keep Dark? User said "Layout is fine", "UI is incomplete". Usually "Modern" = Clean Dark or Light. User had dark mode. Let's stick to Clean Dark. */
+  /* --- Base Palette: Nature & Water (Emerald & Sky) --- */
+  --color-brand-primary: #059669; /* Emerald 600 */
+  --color-brand-secondary: #0ea5e9; /* Sky 500 */
+  
+  /* --- Surface Colors (Light Mode) --- */
+  --bg-app-gradient-start: #f0fdf4; /* Emerald 50 */
+  --bg-app-gradient-end: #f0f9ff;   /* Sky 50 */
+  --bg-surface: #ffffff;
+  --bg-surface-glass: rgba(255, 255, 255, 0.7);
+  
+  /* --- Text Colors (Light Mode) --- */
+  --text-primary: #0f172a;   /* Slate 900 */
+  --text-secondary: #475569; /* Slate 600 */
+  --text-muted: #94a3b8;     /* Slate 400 */
+  
+  /* --- Borders --- */
+  --border-subtle: #e2e8f0;  /* Slate 200 */
+  --border-glass: rgba(255, 255, 255, 0.5);
 
-  /* Modern Dark Palette (Reference: Linear/Vercel/Claude Dark) */
-  --bg-app: #09090b;
-  /* Zinc 950 */
-  --bg-panel: #18181b;
-  /* Zinc 900 */
-  --bg-element: #27272a;
-  /* Zinc 800 */
-  --bg-hover: #3f3f46;
-  /* Zinc 700 */
-
-  --text-primary: #f4f4f5;
-  /* Zinc 100 */
-  --text-secondary: #a1a1aa;
-  /* Zinc 400 */
-  --text-muted: #71717a;
-  /* Zinc 500 */
-
-  --border-color: #27272a;
-  /* Zinc 800 - Subtle */
-
-  /* Brand Colors - Subtle, not Neon */
-  --color-brand: #10b981;
-  /* Emerald 500 */
-  --color-accent: #3b82f6;
-  /* Blue 500 */
-
-  /* Risk Colors */
+  /* --- Risk Indicators --- */
   --risk-safe: #10b981;
   --risk-moderate: #f59e0b;
   --risk-critical: #ef4444;
   --risk-extreme: #7f1d1d;
 
-  /* Typography */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  /* --- Shadcn Variables Integration --- */
+  --background: 255 255 255; /* White for fallbacks */
+  --foreground: 15 23 42; 
+
+  --card: 0 0% 100%;
+  --card-foreground: 15 23 42;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 15 23 42;
+
+  --primary: 159 63% 40%;    /* Emerald 600 equivalent hsl */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 159 63% 40%;
+
+  --radius: 0.75rem; /* 12px - Modern Soft */
+  
+  --font-sans: 'Inter', -apple-system, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --radius: 0.625rem;
-  /* Force Matte Dark Theme by Default */
-  --background: var(--bg-app);
-  --foreground: var(--text-primary);
-  --card: var(--bg-panel);
-  --card-foreground: var(--text-primary);
-  --popover: var(--bg-panel);
-  --popover-foreground: var(--text-primary);
-  --primary: var(--color-brand);
-  --primary-foreground: #ffffff;
-  --secondary: var(--bg-element);
-  --secondary-foreground: var(--text-primary);
-  --muted: var(--bg-element);
-  --muted-foreground: var(--text-muted);
-  --accent: var(--bg-hover);
-  --accent-foreground: var(--text-primary);
-  --destructive: var(--risk-critical);
-  --destructive-foreground: #ffffff;
-  --border: var(--border-color);
-  --input: var(--border-color);
-  --ring: var(--color-brand);
-
-  --chart-1: var(--color-brand);
-  --chart-2: var(--color-accent);
-  --chart-3: var(--risk-moderate);
-  --chart-4: var(--risk-critical);
-  --chart-5: var(--risk-extreme);
-
-  --sidebar: var(--bg-panel);
-  --sidebar-foreground: var(--text-primary);
-  --sidebar-primary: var(--color-brand);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--bg-element);
-  --sidebar-accent-foreground: var(--text-primary);
-  --sidebar-border: var(--border-color);
-  --sidebar-ring: var(--color-brand);
 }
 
+/* === Dark Mode === */
+.dark {
+  /* --- Surface Colors (Dark Mode) --- */
+  --bg-app-gradient-start: #020617; /* Slate 950 */
+  --bg-app-gradient-end: #0f172a;   /* Slate 900 */
+  --bg-surface: #1e293b;            /* Slate 800 */
+  --bg-surface-glass: rgba(30, 41, 59, 0.7);
+
+  /* --- Text Colors (Dark Mode) --- */
+  --text-primary: #f8fafc;   /* Slate 50 */
+  --text-secondary: #cbd5e1; /* Slate 300 */
+  --text-muted: #64748b;     /* Slate 500 */
+
+  /* --- Borders --- */
+  --border-subtle: #334155;  /* Slate 700 */
+  --border-glass: rgba(255, 255, 255, 0.1);
+
+  /* --- Shadcn Dark --- */
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 159 63% 50%; /* Lighter Emerald for Dark Mode */
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 159 63% 50%;
+}
+
+/* === Global Resets === */
 * {
   box-sizing: border-box;
-  padding: 0;
-  margin: 0;
 }
 
-html,
-body {
+html, body {
   height: 100%;
   font-family: var(--font-sans);
-  background-color: var(--bg-app);
   color: var(--text-primary);
-  overflow: hidden;
+  /* Animated Gradient Background */
+  background: linear-gradient(135deg, var(--bg-app-gradient-start), var(--bg-app-gradient-end));
+  background-attachment: fixed;
+  overflow: hidden; /* Prevent body scroll, use container scroll */
 }
 
-/* Custom Scrollbar */
+/* === Scrollbar Styling === */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: var(--bg-element);
-  border-radius: 4px;
+  background: var(--border-subtle);
+  border-radius: 99px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--bg-hover);
+  background: var(--text-muted);
 }
 
-/* Modern Utilities - Minimalist */
-.panel-base {
-  background-color: var(--bg-panel);
-  border: 1px solid var(--border-color);
+/* === Utility Classes : Glassmorphism === */
+.glass-panel {
+  background: var(--bg-surface-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
 }
 
-/* Clean Input */
-.input-clean {
-  background-color: transparent;
-  color: var(--text-primary);
-  outline: none;
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.input-clean::placeholder {
-  color: var(--text-muted);
+/* === Utility Classes : Floating Layout === */
+.floating-card {
+  margin: 1rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Fade In */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.animate-fade-in {
-  animation: fadeIn 0.2s ease-out forwards;
+.text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to right, var(--color-brand-primary), var(--color-brand-secondary));
 }
 
 @theme inline {
@@ -173,11 +201,6 @@ body {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -188,48 +211,10 @@ body {
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-.dark {
-  --background: var(--bg-app);
-  --foreground: var(--text-primary);
-  --card: var(--bg-panel);
-  --card-foreground: var(--text-primary);
-  --popover: var(--bg-panel);
-  --popover-foreground: var(--text-primary);
-  --primary: var(--color-brand);
-  --primary-foreground: #ffffff;
-  --secondary: var(--bg-element);
-  --secondary-foreground: var(--text-primary);
-  --muted: var(--bg-element);
-  --muted-foreground: var(--text-muted);
-  --accent: var(--bg-hover);
-  --accent-foreground: var(--text-primary);
-  --destructive: var(--risk-critical);
-  --destructive-foreground: #ffffff;
-  --border: var(--border-color);
-  --input: var(--border-color);
-  --ring: var(--color-brand);
-
-  --chart-1: var(--color-brand);
-  --chart-2: var(--color-accent);
-  --chart-3: var(--risk-moderate);
-  --chart-4: var(--risk-critical);
-  --chart-5: var(--risk-extreme);
-
-  --sidebar: var(--bg-panel);
-  --sidebar-foreground: var(--text-primary);
-  --sidebar-primary: var(--color-brand);
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: var(--bg-element);
-  --sidebar-accent-foreground: var(--text-primary);
-  --sidebar-border: var(--border-color);
-  --sidebar-ring: var(--color-brand);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-
   body {
     @apply bg-background text-foreground;
   }

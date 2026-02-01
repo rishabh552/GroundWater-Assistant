@@ -32,6 +32,9 @@ reportlab>=4.0.0
 mtranslate>=1.8
 langdetect>=1.0.9
 
+# === LLM Providers ===
+google-genai>=0.3.0
+
 # === UI Dependencies (Streamlit) ===
 streamlit>=1.40.0
 streamlit-folium>=0.15.0
@@ -39,3 +42,4 @@ folium>=0.15.0
 
 # === Utilities ===
 tqdm>=4.66.0
+duckduckgo-search>=6.0.0

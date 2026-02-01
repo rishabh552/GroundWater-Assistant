@@ -40,12 +40,14 @@ def get_llm():
 class ChatRequest(BaseModel):
     query: str
     language: Optional[str] = None
+    user_role: Optional[str] = "farmer"  # "farmer" or "officer"
 
 class ChatResponse(BaseModel):
     response: str
     detected_language: str
     risk_level: str
     query_english: str
+    used_role: str
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
@@ -55,6 +57,8 @@ async def chat(request: ChatRequest):
     """
     try:
         query = request.query.strip()
+        user_role = request.user_role or "farmer"
+        
         if not query:
             raise HTTPException(status_code=400, detail="Query cannot be empty")
         
@@ -73,7 +77,8 @@ async def chat(request: ChatRequest):
                 response=no_data_msg,
                 detected_language=detected_lang,
                 risk_level="Unknown",
-                query_english=english_query
+                query_english=english_query,
+                used_role=user_role
             )
         
         # Run agent
@@ -81,7 +86,8 @@ async def chat(request: ChatRequest):
         agent = Agency(llm, retriever)
         
         final_response = ""
-        for step in agent.run(english_query):
+        # Pass user_role to the agent
+        for step in agent.run(english_query, user_role=user_role):
             if step["status"] == "final":
                 final_response = step["content"]
                 break
@@ -106,7 +112,8 @@ async def chat(request: ChatRequest):
             response=final_response,
             detected_language=detected_lang,
             risk_level=risk_level,
-            query_english=english_query
+            query_english=english_query,
+            used_role=user_role
         )
         
     except Exception as e:

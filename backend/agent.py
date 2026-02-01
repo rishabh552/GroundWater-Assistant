@@ -8,7 +8,7 @@ import ast
 import os
 from backend.tools import AVAILABLE_TOOLS
 from backend.llm import generate_response
-from backend.prompts import AGENT_SYSTEM_PROMPT
+from backend.prompts import AGENT_SYSTEM_PROMPT, get_agent_prompt
 
 # Get the project root directory for data files
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -17,7 +17,7 @@ class Agency:
     def __init__(self, llm_tuple, retriever):
         self.llm = llm_tuple
         self.retriever = retriever
-        self.max_steps = 3  # Reduced for faster responses (most queries need 1-2 calls)
+        self.max_steps = 7  # Increased to 7 for complex Hybrid reasoning (RAG + Web + Synthesis)
         self._load_district_risks()
     
     def _load_district_risks(self):
@@ -112,10 +112,13 @@ class Agency:
         
         return f"Unknown tool: {tool_name}"
 
-    def run(self, user_query):
+    def run(self, user_query, user_role="farmer"):
         """
         Run the ReAct loop.
         """
+        # Select appropriate system prompt
+        system_prompt = get_agent_prompt(user_role)
+        
         # Initial Context
         history = f"User: {user_query}\n"
         
@@ -123,12 +126,12 @@ class Agency:
         executed_actions = []
         
         # Yield status updates for the UI
-        yield {"status": "thinking", "content": "Analyzing request..."}
+        yield {"status": "thinking", "content": f"Analyzing request as {user_role.title()}..."}
         
         for i in range(self.max_steps):
             # 1. Think
             prompt = history + "Thought:"
-            response = generate_response(self.llm, prompt, system_prompt=AGENT_SYSTEM_PROMPT)
+            response = generate_response(self.llm, prompt, system_prompt=system_prompt)
             
             # Clean up response to avoid repetition
             if "Observation:" in response:

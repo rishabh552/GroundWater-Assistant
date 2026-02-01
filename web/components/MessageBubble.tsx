@@ -1,14 +1,15 @@
 "use client";
 
-import { Message } from "../app/page";
-import { FileDown, User } from "lucide-react";
+import { Message } from "../types";
+import { FileDown, User, Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface MessageBubbleProps {
     message: Message;
+    onDelete?: (id: string) => void;
 }
 
-export default function MessageBubble({ message }: MessageBubbleProps) {
+export default function MessageBubble({ message, onDelete }: MessageBubbleProps) {
     const isUser = message.role === "user";
     const [downloading, setDownloading] = useState(false);
 
@@ -95,20 +96,39 @@ export default function MessageBubble({ message }: MessageBubbleProps) {
                 </div>
 
                 {/* User avatar */}
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500/30 to-blue-500/30 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 shadow-md">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500/30 to-blue-500/30 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 shadow-md relative">
                     <User size={14} className="text-emerald-400" />
                 </div>
+                {onDelete && (
+                    <button
+                        onClick={() => onDelete(message.id)}
+                        className="opacity-0 group-hover:opacity-100 absolute -right-8 top-2 p-1.5 text-red-400 hover:text-red-300 hover:bg-white/5 rounded-full transition-all"
+                        title="Delete message"
+                    >
+                        <Trash2 size={14} />
+                    </button>
+                )}
             </div>
         );
     }
 
     // Agent Message (unchanged logic, updated brand icon)
     return (
-        <div className="flex gap-4 max-w-[90%] fade-in-up">
+        <div className="flex gap-4 max-w-[90%] fade-in-up group relative">
             <div className="w-8 h-8 rounded-lg flex-shrink-0 bg-gradient-to-br from-[var(--bg-element)] to-[#1a2a1a] flex items-center justify-center border border-emerald-500/20 text-emerald-400 shadow-md">
                 {/* Brand Icon */}
                 <span className="font-bold text-xs">💧</span>
             </div>
+
+            {onDelete && (
+                <button
+                    onClick={() => onDelete(message.id)}
+                    className="opacity-0 group-hover:opacity-100 absolute -left-8 top-2 p-1.5 text-red-500 hover:text-red-400 hover:bg-white/5 rounded-full transition-all"
+                    title="Delete message"
+                >
+                    <Trash2 size={14} />
+                </button>
+            )}
 
             <div className="flex-1 space-y-2">
                 <div className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">

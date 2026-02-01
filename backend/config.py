@@ -25,7 +25,13 @@ MODELS_DIR.mkdir(parents=True, exist_ok=True)
 LLM_MODEL_ID = os.getenv("LLM_MODEL_ID", "ibm-granite/granite-3.0-2b-instruct")
 LLM_CONTEXT_LENGTH = 4096
 LLM_TEMPERATURE = 0.1  # Low for factual responses
-LLM_MAX_TOKENS = 512  # Reduced to stay within context limits
+LLM_MAX_TOKENS = 1024  # Increased for Gemini 2.5 verbose reasoning
+
+# LLM Provider Settings
+# Options: 'local' (Granite) or 'gemini' (Google API)
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "local").lower()
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
+GEMINI_MODEL_ID = os.getenv("GEMINI_MODEL_ID", "gemini-2.5-flash")  # Can be overridden via .env (e.g., gemma-3-27b-it)
 
 # Embedding Settings
 EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
@@ -33,7 +39,7 @@ CHUNK_SIZE = 1000
 CHUNK_OVERLAP = 200
 
 # Retrieval Settings
-TOP_K_RESULTS = 3  # Reduced to prevent context overflow
+TOP_K_RESULTS = 5  # Increased to ensure Officer persona gets sufficient detail
 
 # Risk Classification Mapping
 RISK_LEVELS = {
