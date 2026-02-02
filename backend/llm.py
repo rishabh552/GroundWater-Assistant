@@ -2,7 +2,7 @@
 LLM integration with support for multiple providers (Local/Granite vs Cloud/Gemini)
 """
 import torch
-from google import genai
+import google.genai as genai
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import os
 

@@ -15,6 +15,7 @@ interface ChatAreaProps {
     onSendMessage: (query: string) => void;
     userRole?: string;
     onDeleteMessage?: (id: string) => void;
+    onDeleteConversation?: (id: string) => void;
 }
 
 export default function ChatArea({
@@ -22,7 +23,8 @@ export default function ChatArea({
     isLoading,
     onSendMessage,
     userRole = "farmer",
-    onDeleteMessage
+    onDeleteMessage,
+    onDeleteConversation
 }: ChatAreaProps) {
     const { t, language } = useLanguage();
     const [input, setInput] = useState("");
@@ -151,7 +153,11 @@ export default function ChatArea({
                     ) : (
                         messages.map((msg) => (
                             <div key={msg.id} id={`message-${msg.id}`} className="transition-all duration-500 ease-out animate-in slide-in-from-bottom-4 fade-in">
-                                <MessageBubble message={msg} onDelete={onDeleteMessage} />
+                                <MessageBubble
+                                    message={msg}
+                                    onDelete={onDeleteMessage}
+                                    onDeleteThread={onDeleteConversation}
+                                />
                             </div>
                         ))
                     )}

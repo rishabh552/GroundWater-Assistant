@@ -176,6 +176,7 @@ export default function Home() {
           onSendMessage={handleSendMessage}
           userRole={userRole}
           onDeleteMessage={handleDeleteMessage}
+          onDeleteConversation={handleDeleteConversation}
         />
       </div>
 

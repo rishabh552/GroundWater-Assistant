@@ -7,9 +7,10 @@ import { useState } from "react";
 interface MessageBubbleProps {
     message: Message;
     onDelete?: (id: string) => void;
+    onDeleteThread?: (id: string) => void;
 }
 
-export default function MessageBubble({ message, onDelete }: MessageBubbleProps) {
+export default function MessageBubble({ message, onDelete, onDeleteThread }: MessageBubbleProps) {
     const isUser = message.role === "user";
     const [downloading, setDownloading] = useState(false);
 
@@ -76,7 +77,7 @@ export default function MessageBubble({ message, onDelete }: MessageBubbleProps)
     // Premium User Message Design
     if (isUser) {
         return (
-            <div className="flex justify-end gap-3 group">
+            <div className="flex justify-end gap-3 group relative">
                 <div className="flex flex-col items-end gap-1.5 max-w-[75%]">
                     {/* User message bubble with premium gradient border */}
                     <div className="relative">
@@ -84,8 +85,17 @@ export default function MessageBubble({ message, onDelete }: MessageBubbleProps)
                         <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl rounded-tr-sm blur-xl opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
 
                         {/* Main bubble */}
-                        <div className="relative bg-gradient-to-br from-[#1a1a2e] to-[#16162a] border border-[#2a2a4a]/60 text-[var(--text-primary)] px-4 py-3 rounded-2xl rounded-tr-sm shadow-lg backdrop-blur-sm">
+                        <div className="relative bg-gradient-to-br from-[#1a1a2e] to-[#16162a] border border-[#2a2a4a]/60 text-[var(--text-primary)] px-4 py-3 rounded-2xl rounded-tr-sm shadow-lg backdrop-blur-sm pr-10">
                             <p className="text-sm leading-relaxed">{message.content}</p>
+
+                            {/* In-bubble delete for user messages to avoid clipping */}
+                            <button
+                                onClick={() => onDeleteThread ? onDeleteThread(message.id) : onDelete?.(message.id)}
+                                className="absolute top-2 right-2 p-1.5 text-red-500/60 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                title="Delete this conversation thread"
+                            >
+                                <Trash2 size={13} />
+                            </button>
                         </div>
                     </div>
 
@@ -99,15 +109,6 @@ export default function MessageBubble({ message, onDelete }: MessageBubbleProps)
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500/30 to-blue-500/30 border border-emerald-500/20 flex items-center justify-center flex-shrink-0 shadow-md relative">
                     <User size={14} className="text-emerald-400" />
                 </div>
-                {onDelete && (
-                    <button
-                        onClick={() => onDelete(message.id)}
-                        className="opacity-0 group-hover:opacity-100 absolute -right-8 top-2 p-1.5 text-red-400 hover:text-red-300 hover:bg-white/5 rounded-full transition-all"
-                        title="Delete message"
-                    >
-                        <Trash2 size={14} />
-                    </button>
-                )}
             </div>
         );
     }
@@ -120,19 +121,19 @@ export default function MessageBubble({ message, onDelete }: MessageBubbleProps)
                 <span className="font-bold text-xs">💧</span>
             </div>
 
-            {onDelete && (
-                <button
-                    onClick={() => onDelete(message.id)}
-                    className="opacity-0 group-hover:opacity-100 absolute -left-8 top-2 p-1.5 text-red-500 hover:text-red-400 hover:bg-white/5 rounded-full transition-all"
-                    title="Delete message"
-                >
-                    <Trash2 size={14} />
-                </button>
-            )}
-
             <div className="flex-1 space-y-2">
-                <div className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap">
+                <div className="text-sm text-[var(--text-secondary)] leading-relaxed whitespace-pre-wrap relative group/content">
                     {message.content}
+
+                    {onDelete && (
+                        <button
+                            onClick={() => onDelete(message.id)}
+                            className="absolute -right-8 top-0 p-1.5 text-red-500/40 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover/content:opacity-100"
+                            title="Delete this message"
+                        >
+                            <Trash2 size={13} />
+                        </button>
+                    )}
                 </div>
 
                 {message.riskLevel && (
